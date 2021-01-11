@@ -40,7 +40,7 @@ aliases:
 	imn 1000	# увеличить счетчик месяцев
 	sln 1111	# погасить индикаторы
 	nop 0000	# ничего 
-	gosleep 00111111 
+	gosleep "slp sln"
 function:
 	slp a  | act awk
 	slp b  | act awk

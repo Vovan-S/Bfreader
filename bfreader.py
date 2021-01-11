@@ -195,7 +195,7 @@ class Reader:
                 self.syntax_error(f'redefining alias "{tokens[0]}"')
             if not tokens[0][0].isalpha():
                 self.syntax_error(f'invalid alias name "{tokens[0]}"')
-            bits = self.str_to_bits(tokens[1])
+            bits = self.str_to_bits(self.expand(tokens[1], strings))
             self.aliases[tokens[0]] = bits
             return 'aliases'
         elif state == 'outputs':
