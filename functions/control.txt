@@ -1,0 +1,80 @@
+name: Преобразователь для управляющего конечного автомата
+inputs:
+	+s0 "бит 0 состояния"
+	+s1 "бит 1 состояния"
+	+s2 "бит 2 состояния"
+	+s3 "бит 3 состояния"
+	+i0 "младший бит входа"
+	+i1 "старший бит входа"
+outputs:
+	+s'0 "бит 0 нового состояния"
+	+s'1 "бит 1 нового состояния"
+	+s'2 "бит 2 нового состояния"
+	+s'3 "бит 3 нового состояния"
+	+o0  "бит 0 выхода"
+	+o1  "бит 1 выхода"
+	+o2  "бит 2 выхода"
+	+o3  "бит 3 выхода"
+aliases:
+	act 0000 	# активное состояние
+	tsp 0101	# таймер остановлен
+	trn 0110	# таймер запущен
+	chr 1000	# настройка часов
+	cmh 1001	# настройка минут (старший разряд)
+	cml 1010	# настройка минут (младший разряд)
+	cds 1011	# настройка дней
+	cmn 1100	# настройка месяцев
+	slp 0011	# сон
+	a   01		# кнопка А
+	b   10		# кнопка Б
+	s   00		# сигнал от таймера бездействия
+	ab  11		# обе кнопки
+	awk 1001	# показать время
+	rst 0001	# обнулить таймер
+	str 0010	# запустить таймер
+	stp 0011	# остановить таймер
+	ihr 0100	# увеличить счетчик часов
+	imh 0101	# увеличить счетчик минут (ст)
+	iml 0110	# увеличить счетчик минут (мл)
+	ids 0111	# увеличить счетчик дней
+	imn 1000	# увеличить счетчик месяцев
+	sln 1111	# погасить индикаторы
+	nop 0000	# ничего 
+	gosleep 00111111 
+function:
+	slp a  | act awk
+	slp b  | act awk
+	slp ab | act awk
+	slp s  | slp nop
+	act a  | chr nop
+	act b  | tsp rst
+	act ab | gosleep 
+	act s  | gosleep 
+	chr a  | cmh nop
+	chr b  | chr ihr
+	chr s  | slp sln
+	chr ab | slp sln
+	cmh a  | cml nop
+	cmh b  | cmh imh
+	cmh ab | gosleep 
+	cmh s  | gosleep 
+	cml a  | cds nop
+	cml b  | cml iml
+	cml ab | gosleep 
+	cml s  | gosleep 
+	cds a  | cmn nop
+	cds b  | cds ids
+	cds s  | gosleep 
+	cds ab | gosleep 
+	cmn a  | act awk
+	cmn b  | cmn imn
+	cmn s  | gosleep 
+	cmn ab | gosleep 
+	tsp a  | act awk
+	tsp b  | trn str
+	tsp ab | gosleep 
+	tsp s  | gosleep 
+	trn a  | tsp rst
+	trn b  | tsp stp
+	trn ab | gosleep 
+	trn s  | gosleep 
